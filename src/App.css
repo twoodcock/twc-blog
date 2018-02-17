@@ -26,3 +26,30 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.App-content {
+  text-align: left;
+  margin: 20px;
+}
+
+.Comp-post-in-list {
+  margin-bottom: 2em;
+}
+.Comp-meta-author {
+  font-size: 90%;
+}
+.Comp-meta {
+  color: #888;
+  font-size: 80%;
+}
+.Comp-meta a {
+  color: #999;
+}
+.Comp-separator::before,  .Comp-separator::after {
+  content: "\0000a0\0000a0";
+}
+
+.Comp-meta-inline {
+  display: inline-block;
+  padding: 0 0.2em;
+}

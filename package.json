@@ -12,5 +12,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "proxy-comment0": "proxy to Projects/woodcock.ca/test.reactive.",
+  "proxy-comment1": "run that with make devserver",
+  "proxy-comment2": "stop that with make stopserver",
+  "proxy-comment3": "don't 'make devserver' when pelican is already running. pelican is tempremental.",
+  "proxy": "https://albatross.lxd/blogapi"
 }
