@@ -1,5 +1,16 @@
 import { APIItem, APIList } from './Mixins';
 
+/*
+ * APIObjects - a set of objects to provide data to the application.
+ * 
+ * APIObjects are together in a single file out of necessity because they are
+ * codependent.
+ *
+ *      APIPost is composed with APICategory
+ *      APIPostList is composed with APIPost
+ *      APICategory is based on APIPostList
+ */
+
 class APIAuthor extends APIItem {
     get myAttributes() {
         return [
@@ -103,6 +114,19 @@ export class APIPostList extends APIItem {
         return "index.json";
     }
 
+    getRoute() {
+        var route;
+        console.log("getRoute called ", this)
+        if (this.data.url) {
+            route = this.data.url;
+        } else {
+            route = this.route();
+        }
+        console.log("getRoute: ", route)
+        return route;
+    }
+
+    get url_fmt() { return "/index{N}.json" }
     get next_url() { return this.data.next_url }
     get previous_url() { return this.data.previous_url }
     get page_count() { return this.data.page_count }
@@ -118,6 +142,7 @@ export class APICategory extends APIPostList {
         return [
             'name',
             'shortname',
+            'slug',
             'url',
             // generic post list attributes:
             'next_url',
@@ -129,6 +154,9 @@ export class APICategory extends APIPostList {
             'posts'
         ];
     }
+
+    get url_fmt() { return "/categories/{slug}{N}.json" }
+    get slug() { return this.data.slug }
 
     route() { return "category"; }
 
@@ -157,11 +185,15 @@ export class APITag extends APIPostList {
         const list = super.myAttributes;
         var newList = [
             'name',
-            'url'
+            'url',
+            'slug',
         ];
         newList.push(...list);
         return newList;
     }
+
+    get url_fmt() { return "/tag/{slug}{N}.json" }
+    get slug() { return this.data.slug }
 
     getRoute() {
         var route;

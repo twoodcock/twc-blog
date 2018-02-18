@@ -1,10 +1,16 @@
+.brand-disclaimer {
+  color: #999;
+  font-size: 50%;
+}
 .App {
   text-align: center;
+  color: #444;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
+  /*animation: App-logo-spin infinite 20s linear;*/
   height: 80px;
+  display: none; /* only display in wide screen. */
 }
 
 .App-header {
@@ -29,14 +35,75 @@
 
 .App-content {
   text-align: left;
-  margin: 20px;
 }
 
-.Comp-post-in-list {
-  margin-bottom: 2em;
+.PostList-heading {
+    margin: 0 0 1em 0;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 2px #eee;
+    background-color: #eee;
+    color: #999;
+    text-align: center;
 }
+.PostList-heading h3 {
+  margin: 0.1em 0;
+}
+.PostList-pagination {
+    margin: 0.1em 0;
+}
+.PostList-pagination a {
+    text-decoration: underline;
+    text-decoration-color: #ccc;
+}
+.PostList-pagination div {
+    display: inline-block;
+    margin: 0 0.2em;
+    min-width: 1.2em;
+    text-align: right;
+}
+.PostList-pagination span.PostList-range {
+  font-size: 90%;
+}
+
+.Post {
+    margin: 0 0 1em 0;
+    padding: 0.4em;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 2px #eee;
+}
+.Post:first-child {
+  margin-top: 0.5em;
+}
+.Post h3 {
+  margin-top: 0;
+}
+.Post .Comp-meta {
+  margin-left: 1em;
+}
+
 .Comp-meta-author {
   font-size: 90%;
+}
+
+.Comp a {
+  color: #999;
+  text-decoration: underline;
+  text-decoration-color: #ccc;
+  cursor: pointer;
+}
+
+.Comp-summary p:first-child {
+  margin-top: 0;
+}
+.Comp-summary p:last-child {
+  margin-bottom: 0;
+}
+.Comp-summary {
+  margin-bottom: 1em;
+}
+.Comp-summary .Comp-read-the-rest {
+  font-size: 80%;
+  margin-bottom: 1em;
 }
 .Comp-meta {
   color: #888;
@@ -44,6 +111,8 @@
 }
 .Comp-meta a {
   color: #999;
+  text-decoration: underline;
+  text-decoration-color: #ccc;
 }
 .Comp-separator::before,  .Comp-separator::after {
   content: "\0000a0\0000a0";
@@ -52,4 +121,38 @@
 .Comp-meta-inline {
   display: inline-block;
   padding: 0 0.2em;
+}
+
+/* for pure-css , from https://purecss.io/layouts/blog/ */
+.sidebar {
+  background: #444;
+  color: white;
+  box-shadow: 2px 2px 2px #ccc;
+}
+.header, .content {
+  margin: 0.5em;
+}
+@media (min-width: 48em) {
+    .App-logo {
+      display: inline;
+    }
+    .content {
+        padding: 0.5em 3em 0;
+        margin-left: 25%;
+    }
+
+    .header {
+        margin: 10% 2em 0;
+        text-align: right;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+    }
+
+    .footer {
+        text-align: center;
+    }
 }

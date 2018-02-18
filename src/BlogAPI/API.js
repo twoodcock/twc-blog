@@ -49,7 +49,7 @@ export class API {
         if (data) {
             params.body = JSON.stringify(data);
         }
-        //console.log(this.logPrefix + " --- "+method+" --- send: ", route, params)
+        console.log(this.logPrefix + " --- "+method+" --- send("+route+") ", params)
         return apiFetch(route, params).then((response) => {
             this.opCount[method]++;
             if (!response.ok) {
@@ -61,6 +61,12 @@ export class API {
             //     )
             return response.json();
         }).catch((error) => {
+            // refetch to get the json text.
+            apiFetch(route, params).then((response) => {
+                response.text().then((text) => {
+                    console.log(this.logPrefix+" --- "+method+" json --- ", text)
+                })
+            });
             console.log(this.logPrefix+" --- "+method+" error --- ", error)
             throw (error);
         })
