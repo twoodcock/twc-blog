@@ -3,19 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "history": "^4.7.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "react-test-render": "^1.1.1",
+    "route-parser": "^0.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "test-withjsdom": "react-scripts test --env=jsdom",
     "test": "react-scripts test --env=jsdom",
+    "test-wojsdom": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "proxy-comment0": "proxy to Projects/woodcock.ca/test.reactive.",
   "proxy-comment1": "run that with make devserver",
   "proxy-comment2": "stop that with make stopserver",
   "proxy-comment3": "don't 'make devserver' when pelican is already running. pelican is tempremental.",
-  "proxy": "https://albatross.lxd/blogapi"
+  "proxy": "http://albatross.lxd:8000/",
+  "homepage": "http://tim.woodcock.ca/"
 }

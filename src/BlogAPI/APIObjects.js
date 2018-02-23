@@ -18,11 +18,63 @@ class APIAuthor extends APIItem {
             'url'
         ]
     }
-
     get name() { return this.data.name }
     get url() { return this.data.url }
 }
 
+/*
+ * APIPage
+ *
+ * APIPage has keys to identify it:
+ *      slug: The file name, without the json suffix.
+ *      year: The year of the post
+ *      month: The month of the post,
+ *
+ * APIPage has these attributes:
+ *      title:      string
+ *      date:       date object?
+ *      authors:    a list of APIAuthor objects.
+ *      category:   The post category, an APICategory.
+ *      tags:       The list of tags, a list of APITag.
+ *      content:    String, probably containing raw HTML.
+ */
+export class APIPage extends APIItem {
+    get myAttributes() {
+        // This tells the superclass what to attributes exist.
+        return [
+            'slug',
+            'title',
+            'date',
+            'authors',
+            'categories',
+            'cssid',
+            'content',
+            'url',  // this is not useful for the user, but may be for us.
+        ]
+    }
+
+    get myClasses() {
+        return {
+            authors: [APIAuthor],
+            categories: [APICategory],
+        }
+    }
+
+    get url_fmt() { return "/pages/{slug}" }
+    route() {
+        return "pages"
+    }
+
+    getRoute() {
+        var route;
+        if (this.data.url) {
+            route = this.data.url;
+        } else {
+            route = this.joinRoute(this.route, this.year, this.month, this.slug+".json");
+        }
+        return route;
+    }
+}
 /*
  * APIPost
  *
@@ -57,37 +109,51 @@ export class APIPost extends APIItem {
 
     get myClasses() {
         return {
+            date: Date,
             authors: [APIAuthor],
             categories: [APICategory],
             tags: [APITag],
         }
     }
 
+    get url_fmt() { return "/posts/{year}/{month}/{slug}" }
+    urlFor(props) {
+        props = Object.assign({}, props);
+        var dateArr = [];
+        if (!('year' in props) || !('month' in props)) {
+            const dateStr = this.date.toISOString();
+            dateArr = dateStr.split('-');
+        }
+        if (!('year' in props)) {
+            props.year = dateArr[0];
+        }
+        if (!('month' in props)) {
+            props.month = dateArr[1];
+        }
+        if (!('slug' in props)) {
+            props.slug = this.slug;
+        }
+        var url = this.url_fmt.replace("{slug}", props.slug)
+        url = url.replace("{year}", props.year);
+        url = url.replace("{month}", props.month);
+        if (!url.match(/^\//)) {
+            return "/"+url;
+        }
+        return url;
+    }
     route() {
         return "posts"
     }
 
     getRoute() {
         var route;
-        console.log("getRoute called ", this)
         if (this.data.url) {
             route = this.data.url;
         } else {
             route = this.joinRoute(this.route, this.year, this.month, this.slug+".json");
         }
-        console.log("getRoute: ", route)
         return route;
     }
-
-    get url() { return this.data.url }
-    get slug() { return this.data.slug }
-    get title() { return this.data.title }
-    get date() { return this.data.date }
-    get authors() { return this.data.authors }
-    get summary() { return this.data.summary }
-    get categories() { return this.data.categories }
-    get tags() { return this.data.tags }
-    get content() { return this.data.content }
 }
 
 export class APIPostList extends APIItem {
@@ -100,7 +166,8 @@ export class APIPostList extends APIItem {
             'page_number',
             'per_page',
             'post_count',
-            'posts'
+            'posts',
+            'slug'
         ]
     }
 
@@ -109,6 +176,11 @@ export class APIPostList extends APIItem {
             posts: [APIPost],
         }
     }
+    get length() {
+        return this.data.posts.length;
+    }
+
+    get url_fmt() { return "/index{N}" }
 
     route() {
         return "index.json";
@@ -116,17 +188,14 @@ export class APIPostList extends APIItem {
 
     getRoute() {
         var route;
-        console.log("getRoute called ", this)
-        if (this.data.url) {
-            route = this.data.url;
-        } else {
+        route = this.apiUrl
+        if (!route) {
             route = this.route();
         }
-        console.log("getRoute: ", route)
         return route;
     }
 
-    get url_fmt() { return "/index{N}.json" }
+    get slug() { return this.data.slug }
     get next_url() { return this.data.next_url }
     get previous_url() { return this.data.previous_url }
     get page_count() { return this.data.page_count }
@@ -139,10 +208,59 @@ export class APIPostList extends APIItem {
 export class APICategory extends APIPostList {
     get myAttributes() {
         // FIXME: Ideally we should be able to get the list of attributes from the superclass.
+        return super.myAttributes.concat([
+            'name',
+            'shortname',
+            'url',
+        ]);
+    }
+
+    get url_fmt() { return "/category/{slug}{N}" }
+
+    getRoute() {
+        return this.apiUrl;
+    }
+
+    get shortname() {
+        if (this.data.shortname) {
+            return this.data.shortname;
+        }
+        return this.data.name;
+    }
+}
+
+export class APICategoryBranch extends APIItem {
+    // You'll never 'get' this one; this is used as infrastructure.
+}
+export class APICategoryTree extends APIItem {
+    get myAttributes() {
+        return [
+            'tree',
+            'categories',
+        ]
+    }
+    get myClasses() {
+        return {
+            'categories': { valueClass: APICategory }
+        }
+    }
+    get length() {
+        if (this.data.categories) {
+            return this.data.categories.length;
+        }
+        return 0;
+    }
+    getRoute() {
+        return 'category/index__tree.json'
+    }
+}
+
+export class APICategoryList extends APIList {
+    get myAttributes() {
+        // FIXME: Ideally we should be able to get the list of attributes from the superclass.
         return [
             'name',
             'shortname',
-            'slug',
             'url',
             // generic post list attributes:
             'next_url',
@@ -155,20 +273,17 @@ export class APICategory extends APIPostList {
         ];
     }
 
-    get url_fmt() { return "/categories/{slug}{N}.json" }
-    get slug() { return this.data.slug }
+    get url_fmt() { return "/category/{slug}{N}" }
 
     route() { return "category"; }
 
     getRoute() {
         var route;
-        console.log("getRoute called ", this)
         if (this.data.url) {
             route = this.data.url;
         } else {
             route = this.joinRoute(this.route, this.slug+".json");
         }
-        console.log("getRoute: ", route)
         return route;
     }
 
@@ -182,18 +297,13 @@ export class APICategory extends APIPostList {
 
 export class APITag extends APIPostList {
     get myAttributes() {
-        const list = super.myAttributes;
-        var newList = [
+        return super.myAttributes.concat([
             'name',
             'url',
-            'slug',
-        ];
-        newList.push(...list);
-        return newList;
+        ]);
     }
 
-    get url_fmt() { return "/tag/{slug}{N}.json" }
-    get slug() { return this.data.slug }
+    get url_fmt() { return "/tag/{slug}{N}" }
 
     getRoute() {
         var route;
@@ -202,7 +312,6 @@ export class APITag extends APIPostList {
         } else {
             route = this.joinRoute(this.route, this.slug+".json");
         }
-        console.log("getRoute: ", route)
         return route;
     }
 
@@ -228,13 +337,29 @@ export class APITag extends APIPostList {
  */
 export class APITagList extends APIList {
     get myListItemClass() {
-        return APIItem;
+        return APITag;
     }
 
     route() {
-        return this.joinRoute(this.route, "tags/index.json")
+        return "tag";
+    }
+    getRoute() {
+        return this.joinRoute(this.route(), "index.json")
     }
 
     get name() { return this.data.name }
     get url() { return this.data.url }
+    // we also have the list attribute that contains the items in the list.
 }
+
+const BlogAPI = {
+    PostList: APIPostList,
+    Post: APIPost, 
+    Page: APIPage,
+    Category: APICategory,
+    Tag: APITag,
+    TagList: APITagList,
+    CategoryTree: APICategoryTree
+}
+
+export default BlogAPI;

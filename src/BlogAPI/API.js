@@ -49,26 +49,32 @@ export class API {
         if (data) {
             params.body = JSON.stringify(data);
         }
-        console.log(this.logPrefix + " --- "+method+" --- send("+route+") ", params)
-        return apiFetch(route, params).then((response) => {
+        // console.log(this.logPrefix + " --- "+method+" --- send("+route+") ", params)
+        // When the third parameter to apiFetch is true, the function logs the
+        // full route to the console.
+        return apiFetch(route, params, false).then((response) => {
             this.opCount[method]++;
             if (!response.ok) {
                 console.log(this.logPrefix+" --- "+method+" response not ok --- ", response)
-                throw response;
+                response.text().then((text)=>{
+                    return new Promise((r, reject)=>{
+                        return reject(text)
+                    })
+                })
             }
-            // response.text().then((text)=>
-            // console.log(this.logPrefix+" *** "+method+" complete *** ", text)
-            //     )
             return response.json();
         }).catch((error) => {
             // refetch to get the json text.
-            apiFetch(route, params).then((response) => {
+            apiFetch(route, params, false).then((response) => {
                 response.text().then((text) => {
                     console.log(this.logPrefix+" --- "+method+" json --- ", text)
                 })
             });
+            console.log(this.logPrefix+" --- "+method+" response not ok --- ", route)
             console.log(this.logPrefix+" --- "+method+" error --- ", error)
-            throw (error);
+            return new Promise((r, reject)=>{
+                return reject(error)
+            })
         })
     }
 };

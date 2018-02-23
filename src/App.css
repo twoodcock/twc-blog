@@ -1,6 +1,9 @@
-.brand-disclaimer {
+.App-header .App-disclaimer {
   color: #999;
   font-size: 50%;
+}
+.pure-menu {
+  text-align: right;
 }
 .App {
   text-align: center;
@@ -9,19 +12,32 @@
 
 .App-logo {
   /*animation: App-logo-spin infinite 20s linear;*/
-  height: 80px;
+  max-width: 80px;
+  width: 10vw;
   display: none; /* only display in wide screen. */
+  float: left;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.App-title a,
+.App-title a:visited,
+.App-title a:active
+ {
+  text-decoration: none;
+  color: #099999;
 }
-
 .App-title {
   font-size: 1.5em;
+  margin-bottom: 0.2em;
+  color: #099999;
+}
+
+.App-header .App-tagline:first-of-type {
+  margin-top: 0.2em;
+}
+
+.App-description {
+  font-size: 90%;
+  color: #999;
 }
 
 .App-intro {
@@ -38,87 +54,92 @@
 }
 
 .PostList-heading {
-    margin: 0 0 1em 0;
-    border: 1px solid #ddd;
-    box-shadow: 2px 2px 2px #eee;
-    background-color: #eee;
-    color: #999;
-    text-align: center;
+  margin: 0 0 1em 0;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 2px #eee;
+  background-color: #eee;
+  color: #999;
+  text-align: center;
 }
 .PostList-heading h3 {
   margin: 0.1em 0;
 }
 .PostList-pagination {
-    margin: 0.1em 0;
+  margin: 0.1em 0;
 }
 .PostList-pagination a {
-    text-decoration: underline;
-    text-decoration-color: #ccc;
+  text-decoration: underline;
+  text-decoration-color: #ccc;
+  cursor: pointer;
 }
 .PostList-pagination div {
-    display: inline-block;
-    margin: 0 0.2em;
-    min-width: 1.2em;
-    text-align: right;
+  display: inline-block;
+  margin: 0 0.2em;
+  min-width: 1.2em;
+  text-align: right;
 }
 .PostList-pagination span.PostList-range {
   font-size: 90%;
 }
 
+
+.Page,
 .Post {
-    margin: 0 0 1em 0;
-    padding: 0.4em;
-    border: 1px solid #ddd;
-    box-shadow: 2px 2px 2px #eee;
+  margin: 0 0 1em 0;
+  padding: 0.4em;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 2px #eee;
 }
+.Page:first-child,
 .Post:first-child {
   margin-top: 0.5em;
 }
+.Page h3,
 .Post h3 {
   margin-top: 0;
 }
-.Post .Comp-meta {
+.Post .Post-meta {
   margin-left: 1em;
 }
 
-.Comp-meta-author {
+.Post-meta-author {
   font-size: 90%;
 }
 
-.Comp a {
+.Post a {
   color: #999;
   text-decoration: underline;
   text-decoration-color: #ccc;
   cursor: pointer;
 }
 
-.Comp-summary p:first-child {
+.Post-summary p:first-child {
   margin-top: 0;
 }
-.Comp-summary p:last-child {
+.Post-summary p:last-child {
   margin-bottom: 0;
 }
-.Comp-summary {
+.Post-summary {
   margin-bottom: 1em;
 }
-.Comp-summary .Comp-read-the-rest {
+.Post-summary .Post-read-the-rest {
   font-size: 80%;
   margin-bottom: 1em;
 }
-.Comp-meta {
+.Post-meta {
   color: #888;
   font-size: 80%;
 }
-.Comp-meta a {
+.Post-meta a {
   color: #999;
   text-decoration: underline;
   text-decoration-color: #ccc;
 }
-.Comp-separator::before,  .Comp-separator::after {
+.Post-separator::before,  .Post-separator::after {
   content: "\0000a0\0000a0";
 }
 
-.Comp-meta-inline {
+.Post-meta-inline {
   display: inline-block;
   padding: 0 0.2em;
 }
@@ -129,19 +150,86 @@
   color: white;
   box-shadow: 2px 2px 2px #ccc;
 }
-.header, .content {
+.App-header, .content {
   margin: 0.5em;
 }
-@media (min-width: 48em) {
+
+.Tag-cloud {
+  border: 1px solid #555;
+  margin: 1em;
+  padding: 0.5em;
+  font-size: 70%;
+  text-align: left;
+}
+.Tag-cloud h3 {
+  margin-top: 0;
+  margin-bottom: 0.2em;
+}
+.Tag-cloud a:hover {
+  background: inherit;
+}
+.Tag-cloud a {
+  padding: .3em;
+  font-size: 100%; /* override menu font size */
+  text-decoration: underline;
+  text-decoration-color: #099999;
+}
+.Tag-cloud a:visited {
+  padding: .3em;
+  text-decoration: underline;
+  text-decoration-color: #666;
+}
+/*
+ // for light background.
+.Tag-100 a { color: #099999; }
+.Tag-90 a { color: #088d8d; }
+.Tag-80 a { color: #078282; }
+.Tag-70 a { color: #077777; }
+.Tag-60 a { color: #066b6b; }
+.Tag-50 a { color: #056060; }
+.Tag-40 a { color: #055555; }
+.Tag-30 a { color: #044949; }
+.Tag-20 a { color: #033E3E; }
+.Tag-10 a { color: #033333; }
+.Tag-0 a { color: #033333; }
+*/
+.Tag-100 a { color: #fff; }
+.Tag-90  a { color: #eee; }
+.Tag-80  a { color: #ddd; }
+.Tag-70  a { color: #ccc; }
+.Tag-60  a { color: #bbb; }
+.Tag-50  a { color: #aaa; }
+.Tag-40  a { color: #999; }
+.Tag-30  a { color: #888; }
+.Tag-20  a { color: #777; }
+.Tag-10  a { color: #666; }
+.Tag-0   a { color: #555; }
+
+.Category-cloud {
+  overflow-y: auto;
+  max-height: 10em;
+}
+.Category-cloud::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
+/* optional: show position indicator in red */
+.Category-cloud::-webkit-scrollbar-thumb {
+    background: #FF0000;
+}
+
+@media (min-width: 1024px) {
     .App-logo {
       display: inline;
     }
+}
+@media (min-width: 48em) {
     .content {
         padding: 0.5em 3em 0;
         margin-left: 25%;
     }
 
-    .header {
+    .App-header {
         margin: 10% 2em 0;
         text-align: right;
     }
@@ -154,5 +242,13 @@
 
     .footer {
         text-align: center;
+    }
+
+    .Tag-cloud {
+      text-align: right;
+    }
+    .Tag-cloud a {
+      padding: .1em;
+      text-align: right;
     }
 }

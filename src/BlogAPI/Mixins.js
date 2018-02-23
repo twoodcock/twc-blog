@@ -55,19 +55,45 @@ class APIComposable {
         }
         for (var attr of this.myAttributes) {
             if (!this[attr]){
-                Object.defineProperty(this, attr, { get: this.getValue.bind(this, attr) })
+                var defn;
+                defn = { get: this.getValue.bind(this, attr) }
+                Object.defineProperty(this, attr, defn)
             }
         }
     }
 
     getValue(key) { return this.data[key]; }
-
-    get myAttributes() {return []}
-
-    setter(key, value) {
+    setValue(key, value) {
         const rv = this.data[key];
         this.data[key] = value;
         return rv;
+    }
+
+    get myAttributes() {return []}
+    get apiUrl() {
+        const url = this.data.url;
+        if (url && !url.match(/\.json$/)) {
+            // remember not to don't return ".json" if we don't have a url.
+            return url + ".json";
+        }
+        return url;
+    }
+
+    urlFor(props) {
+        props = Object.assign({}, props);
+        if (!('slug' in props)) {
+            props.slug = this.data.slug;
+        }
+        if (!('page' in props)) {
+            props.page = 1;
+        }
+        var url = this.url_fmt.replace("{slug}", props.slug)
+        const page = props.page?props.page:1;
+        url = url.replace("{N}", (page === "1" || page === 1)?"":"/p/"+page);
+        if (!url.match(/^\//)) {
+            return "/"+url;
+        }
+        return url;
     }
 
     /* joinRoute(list, of, args)
@@ -80,7 +106,6 @@ class APIComposable {
      * a trailing slash.
      */
     joinRoute(...args) {
-        console.log(this.constructor.name + " ||||| ", args)
         return defaultJoinRoute(...args)
     }
 
@@ -103,6 +128,12 @@ class APIComposable {
      */
     classify(key, value) {
         var thingy = this.myClasses[key]
+        // * thingy might be an array containing a single element: the class
+        //   that should be instantiated for each value in the array.
+        // * thingy might be an object with attribute valueClass, which will
+        //   be used to provide class to the value of each attribute in the
+        //   object.
+        // * thingy is otherwise assumed to be a class.
         if (!thingy) {
             // we do not have a class defined for this key.
             return value;
@@ -112,6 +143,13 @@ class APIComposable {
             return value.map((obj) => {
                 return new klass(obj);
             })
+        } else if (thingy instanceof Object && thingy['valueClass']) {
+            // This is an array of thingies.
+            const klass = thingy.valueClass;
+            for (var property in value) {
+                value[property] = new klass(value[property]);
+            }
+            return value;
         } else {
             // instantiate the singular thingy.
             return new thingy(value);
@@ -195,7 +233,6 @@ export class APIItem extends APIComposable {
      * returns a promise returning this instance.
      */
     get(props) {
-        console.log(this.constructor.name+" get request: ", this.getRoute(props))
         return this.API.get(this.getRoute(props))
         .then((data)=>{
             // Set the attributes in this object from the remote source.
@@ -244,8 +281,13 @@ export class APIItem extends APIComposable {
  *      }
  */
 export class APIList extends APIComposable {
+    constructor(props, API=null) {
+        super(props, API);
+        this.data = [];
+    }
 
     get list() { return this.data }
+    get length() { return this.list.length; }
 
     hasItem(props) {
         for (var item of this.data) {

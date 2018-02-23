@@ -5,7 +5,15 @@
  */
 
  const config = {
-    apiEndpoint: "http://albatross.lxd:3000/"
+    "development": {
+        apiEndpoint: "http://albatross.lxd:3000/"
+    },
+    "production": {
+        apiEndpoint: "/r/"
+    },
+    "test": {
+        apiEndpoint: "/r/"
+    }
  }
 
  export default config;

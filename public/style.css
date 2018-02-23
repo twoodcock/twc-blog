@@ -3,3 +3,28 @@
 body {
   font-family: Lato,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;
 }
+/* https://css-tricks.com/elegant-fix-jumping-scrollbar-issue/ */
+html { overflow-y: scroll; }
+
+#resume {
+    color: #444;
+}
+#resume a:visited {
+    color: #444;
+}
+#resume #tagline {
+    text-align: center;
+}
+#resume h1,
+#resume h2,
+#resume h3,
+#resume h4,
+#resume h5,
+#resume h6 {
+    font-weight: 700;
+}
+
+#competencies table tbody tr td,
+#competencies table tbody tr th{
+    padding: 0.4em;
+}

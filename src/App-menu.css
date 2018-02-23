@@ -1,0 +1,130 @@
+/* 
+ * https://codepen.io/andornagy/pen/RNeydj
+ * based on the above horizontal menu design penned by Andor Nagy.
+ * (I assume they are the author.)
+ *
+ * I have translated this to a vertical menu and removed dropdowns as they
+ * don't work in that form, and I don't want them anyway.
+ */
+
+.toggle,
+[id^=drop] {
+    display: none;
+}
+
+/* Giving a background-color to the nav container. */
+nav { 
+    margin:0 1em 0 0;
+    padding: 0;
+    /*background-color: #254441;*/
+    text-align: right;
+}
+
+/* Since we'll have the "ul li" "float:left"
+ * we need to add a clear after the container. */
+
+nav:after {
+    content:"";
+    display:table;
+    clear:both;
+}
+
+/* Removing padding, margin and "list-style" from the "ul",
+ * and adding "position:reltive" */
+nav ul {
+    /*float: right;*/
+    padding:0;
+    margin:0;
+    list-style: none;
+    position: relative;
+    }
+/* Positioning the navigation items inline */
+nav ul li {
+    margin: 0px;
+    /*display:inline-block;*/
+    /*float: left;*/
+    /*background-color: #254441;*/
+    }
+
+/* Styling the links */
+nav a {
+    display:block;
+    padding:14px 20px;  
+    color:#FFF;
+    font-size:17px;
+    text-decoration:none;
+}
+
+
+nav ul li ul li:hover { background: #000000; }
+
+/* Background color change on Hover */
+nav a:hover { 
+    background-color: #000000; 
+}
+
+/* Media Queries
+--------------------------------------------- */
+
+@media all and (max-width : 768px) {
+
+    #logo {
+        display: block;
+        padding: 0;
+        width: 100%;
+        text-align: center;
+        float: none;
+    }
+
+    nav {
+        margin: 0;
+        text-align: left;
+    }
+
+    /* Hide the navigation menu by default */
+    /* Also hide the  */
+    .toggle + a,
+    .menu {
+        display: none;
+    }
+
+    /* Stylinf the toggle lable */
+    .toggle {
+        display: block;
+        /*background-color: #254441;*/
+        padding:14px 0.5em;  
+        color:#FFF;
+        font-size:17px;
+        text-decoration:none;
+        border:none;
+    }
+
+    .toggle:hover {
+        background-color: #555;
+    }
+
+    /* Display Dropdown when clicked on Parent Lable */
+    [id^=drop]:checked + ul {
+        display: block;
+    }
+
+    /* Change menu item's width to 100% */
+    nav ul li {
+        display: block;
+        width: 100%;
+        }
+
+    nav a:hover {
+        background-color: #555;
+    }
+
+}
+
+@media all and (max-width : 330px) {
+
+    nav ul li {
+        display:block;
+        width: 94%;
+    }
+
+}

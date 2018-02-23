@@ -29,7 +29,11 @@ export function setFetchFunction(fn) {
     gFetchFunction = fn;
 }
 
-export function apiFetch(target, args={}) {
-    target = apiConfig.apiEndpoint + target;
+export function apiFetch(target, args={}, log=false) {
+    if (target.match(/^\//)) {
+        target = target.replace(/^\//, "");
+    }
+    target = apiConfig[process.env.NODE_ENV].apiEndpoint + target;
+    if (log) { console.log("fetch: ", target) }
     return gFetchFunction(target, args);
 }
