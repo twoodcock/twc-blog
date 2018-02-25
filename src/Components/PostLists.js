@@ -7,6 +7,12 @@ import { Paginator } from './Paginator';
  * PostList, Category, Tag
  */
 
+function LinkToPost(props) {
+  return <a {...props}>{props.children}</a>
+}
+const tagSep = "\u00b7";
+const categorySep = "/";
+
 class ComponentItemList extends Component {
   get heading() { return "" }
   render() {
@@ -16,24 +22,24 @@ class ComponentItemList extends Component {
     }
     const posts = listObj.posts.map((thisPost)=>{
       const date = new Date(thisPost.date)
+      const linkProps = {
+        href: thisPost.urlFor(),
+        onClick: this.props.getPost,
+        'data-year': date.getFullYear(),
+        'data-month': date.getMonth()+1,
+        'data-slug': thisPost.slug,
+      }
       return <div className="Post PostList-post" key={thisPost.url}>
-          <h3>{thisPost.title}</h3>
-          <div className="Post-summary">
-          <div dangerouslySetInnerHTML={{__html: thisPost.summary}} />
-          <a className="Post-read-the-rest"
-            href={thisPost.urlFor()}
-            onClick={this.props.getPost}
-            data-year={date.getFullYear()}
-            data-month={date.getMonth()+1}
-            data-slug={thisPost.slug}>
-              ...read the rest
-          </a>
-          </div>
-          <div className="Post-meta">
-            <div>Categories: <CategoryWidget categories={thisPost.categories} {...this.props}/></div>
-            <div>Tags: <TagWidget tags={thisPost.tags} {...this.props}/></div>
-            <div>Date: {date.toDateString()}</div>
-          </div>
+        <h3><LinkToPost className="Post-title" {...linkProps}>{thisPost.title}</LinkToPost></h3>
+        <div className="Post-summary">
+        <div dangerouslySetInnerHTML={{__html: thisPost.summary}} />
+        <LinkToPost className="Post-read-the-rest" {...linkProps}>... read the rest</LinkToPost>
+        </div>
+        <div className="Post-meta">
+          <div>Categories: <CategoryWidget separator={categorySep} categories={thisPost.categories} {...this.props}/></div>
+          <div>Tags: <TagWidget separator={tagSep} tags={thisPost.tags} {...this.props}/></div>
+          <div>Date: {date.toDateString()}</div>
+        </div>
       </div>
     })
     return (<div className="PostList">

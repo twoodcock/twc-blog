@@ -4,7 +4,7 @@
  * This file defines generic mixins for APIItem and APIList models.
  *
  */
-import defaultAPI from "./API";
+import defaultWorker from "./APIWorker";
 
 
 /* joinRoute(list, of, args)
@@ -34,10 +34,82 @@ function defaultJoinRoute(...args) {
     return route.join("/");
 }
 
+/* APIComposable
+ *
+ * This is our root mixin.
+ *
+ * Classes mixed with this will get data for known properties and will be able
+ * to interact with the API provided by the worker. Data is stored internally
+ * inside a data object. This implementation provides only getters for values.
+ *
+ * Our Jobs:
+ *
+ * 1. Make sure there is an API worker to send requests.
+ * 2. When we are given props, pick the attributes that we know about and
+ *    store values in the data object.
+ * 3  Convert values from props into objects as specified by myClasses()
+ *    as we load them.
+ *
+ * Utility Methods:
+ *
+ *      joinRoute(...args):
+ *
+ *          Takes a list of route components and joins them with '/',
+ *          attempting to make sure there is only 1 '/' between each
+ *          component. (An attempt to replace python's os.path.join.)
+ *
+ * The subclass must provide:
+ *
+ *      route(props):
+ *
+ *          A routine to provide the base route for API interaction. By
+ *          default, getRoute() calls this.
+ *
+ *      get myAttributes():
+ *
+ *          Return a list of valid properties that will be stored in the
+ *          internal data object from the props object passed on
+ *          instantiation.
+ * 
+ *          Values are converted to classes if they are present in the
+ *          myClasses property.
+ *
+ * The subclass may provide:
+ *
+ *      get myClasses():
+ *  
+ *          Return a dictionary mapping properites to classes. Each class
+ *          should instantiate by accepting a set of properties as
+ *          APIComposable does.
+ *
+ *          The implementation accepts [ClassName] to allow for a list of
+ *          instances. The implementation accepts { valueClass: ClassName } to
+ *          allow for a dictionary of instances.
+ *
+ *          eg:
+ *
+ *          {
+ *              'propertyName': SimpleClass
+ *              'arrayPropertyName': [SomeClass]
+ *              'dictPropertyName': { valueClass: SomeClass }
+ *          }
+ *
+ *      getRoute(props): 
+ *
+ *          The routine to invoke a GET request. This is here because the next
+ *          stage in API implementation is adding POST, PUT, and DELETE, which
+ *          may have other routing information.
+ *
+ *          (This implementation has been stripped of these routines to reduce
+ *          it to basics. The resulting refactoring will make the final full
+ *          implementation stronger.)
+ * 
+ */
 class APIComposable {
-    constructor(props, API=null) {
+    constructor(props, worker=null) {
         // Compose with the API
-        this.API = API?API:defaultAPI;
+        this.worker = worker?worker:defaultWorker;
+        this.builtFrom=null;
         // Data is stored in the data attribute - not strictly necessary, but
         // it avoids confusion between attributes fetched and object control
         // attributes when examining this object.
@@ -170,16 +242,6 @@ class APIComposable {
             }
         }
     }
-
-    _toObject() {
-        var data = {};
-        for (var key of this.myAttributes) {
-            if (this[key] !== undefined) {
-                data[key] = this.data[key];
-            }
-        }
-        return data;
-    }
 }
 
 /* APIItem - Provides generic requests for an object.
@@ -233,7 +295,7 @@ export class APIItem extends APIComposable {
      * returns a promise returning this instance.
      */
     get(props) {
-        return this.API.get(this.getRoute(props))
+        return this.worker.get(this.getRoute(props))
         .then((data)=>{
             // Set the attributes in this object from the remote source.
             this._setAttributesFromData(data);
@@ -281,8 +343,8 @@ export class APIItem extends APIComposable {
  *      }
  */
 export class APIList extends APIComposable {
-    constructor(props, API=null) {
-        super(props, API);
+    constructor(props, worker=null) {
+        super(props, worker);
         this.data = [];
     }
 
@@ -306,7 +368,7 @@ export class APIList extends APIComposable {
     }
 
     get(props) {
-        return this.API.get(this.getRoute(props))
+        return this.worker.get(this.getRoute(props))
         .then((list) => {
             var rv = [];
             // Convert raw items into objects of the right class.

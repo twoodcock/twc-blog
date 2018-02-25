@@ -13,13 +13,8 @@ import { APIItem, APIList } from './Mixins';
 
 class APIAuthor extends APIItem {
     get myAttributes() {
-        return [
-            'name',
-            'url'
-        ]
+        return [ 'name', 'url' ]
     }
-    get name() { return this.data.name }
-    get url() { return this.data.url }
 }
 
 /*
@@ -194,15 +189,6 @@ export class APIPostList extends APIItem {
         }
         return route;
     }
-
-    get slug() { return this.data.slug }
-    get next_url() { return this.data.next_url }
-    get previous_url() { return this.data.previous_url }
-    get page_count() { return this.data.page_count }
-    get page_number() { return this.data.page_number }
-    get per_page() { return this.data.year }
-    get post_count() { return this.data.post_count }
-    get posts() { return this.data.posts }
 }
 
 export class APICategory extends APIPostList {
@@ -314,9 +300,6 @@ export class APITag extends APIPostList {
         }
         return route;
     }
-
-    get name() { return this.data.name }
-    get url() { return this.data.url }
 }
 
 /*
@@ -346,10 +329,6 @@ export class APITagList extends APIList {
     getRoute() {
         return this.joinRoute(this.route(), "index.json")
     }
-
-    get name() { return this.data.name }
-    get url() { return this.data.url }
-    // we also have the list attribute that contains the items in the list.
 }
 
 const BlogAPI = {

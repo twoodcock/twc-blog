@@ -1,3 +1,21 @@
+/*
+ * # Name
+ * 
+ * App.js - the main application component.
+ *
+ * # Description
+ *
+ * This application serves as a single page application UI for the blog on tim.woodcock.ca.
+ *
+ * # Application Data Strategy
+ *
+ * This application is designed so the App component takes care of all data,
+ * sharing it with sub-components as needed.
+ *
+ * We use route-parser to translate locations provided by the history module
+ * into information we use to load data from the API.
+ *
+ */
 import React, { Component } from 'react';
 import Route from 'route-parser';
 import logo from './logo.svg';
@@ -11,10 +29,6 @@ import BlogAPI from './BlogAPI/APIObjects';
 // Component imports
 import PostListComponents from './Components/PostLists';
 import { PostComponent, PageComponent } from './Components/Page';
-
-// class TagList extends Component { render() { return (<div>TagList</div>); } }
-// class ComponentCategoryList extends Component { render() { return (<div>CategoryList</div>); } }
-
 import SidebarComponents from './Components/Sidebar';
 
 export function ErrorComponent(props) {
@@ -52,7 +66,6 @@ class App extends Component {
     }
     this.getCategory = this.getListWidget.bind(this, "category");
     this.getTag = this.getListWidget.bind(this, "tag");
-    this.getAuthor = this.getListWidget.bind(this, "author");
     this.getPostList = this.getListWidget.bind(this, "postList");
     this.getPost = this.getPostWidget.bind(this);
     this.getPage = this.getPageWidget.bind(this);
@@ -110,7 +123,7 @@ class App extends Component {
 
   /* getPageWidget(event) -  Handle an event that triggers any list widget.
    *
-   * used to generate getCategory, getTag, getAuthor, getPostList.
+   * used to generate getCategory, getTag, getPostList.
    */
   getListWidget(name, event) {
     event.preventDefault();
@@ -224,7 +237,6 @@ class App extends Component {
     const events = {
       getCategory: this.getCategory,
       getTag: this.getTag,
-      getAuthor: this.getAuthor,
       getPostList: this.getPostList,
       getPost: this.getPost,
     }
@@ -246,7 +258,7 @@ class App extends Component {
                 <li className="pure-menu-item"><a href="about-this-site" onClick={this.getPage} data-slug="about-this-site" className="pure-menu-link">About This Site</a></li>
                 <li className="pure-menu-heading">Tim Woodcock</li>
                 <li className="pure-menu-item"><a href="resume" onClick={this.getPage} data-slug="resume" className="pure-menu-link">Résumé</a></li>
-                <li className="pure-menu-item">{true && <SidebarComponents.CategoryTreeTL categoryTree={this.state.data.categoryTree} getCategory={events['getCategory']} />}</li>
+                <li className="pure-menu-item">{true && <SidebarComponents.CategoryTreeFL categoryTree={this.state.data.categoryTree} getCategory={events['getCategory']} />}</li>
                 <li className="pure-menu-item">{true && <SidebarComponents.TagList tagList={this.state.data.tagList} getTag={events['getTag']} /> }</li>
               </ul>
             </nav>

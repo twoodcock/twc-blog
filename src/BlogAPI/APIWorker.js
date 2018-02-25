@@ -23,7 +23,7 @@ import { apiFetch } from './Fetch';
  * promise = obj.delete(route);
  */
 
-export class API {
+export class APIWorker {
     constructor() {
         this.verbose = 0;
         this.opCount = {
@@ -79,4 +79,4 @@ export class API {
     }
 };
 
-export default new API();
+export default new APIWorker();

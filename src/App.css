@@ -68,9 +68,13 @@
   margin: 0.1em 0;
 }
 .PostList-pagination a {
+  color: #444;
   text-decoration: underline;
   text-decoration-color: #ccc;
   cursor: pointer;
+}
+.PostList-pagination a:visited {
+  color: #999;
 }
 .PostList-pagination div {
   display: inline-block;
@@ -111,6 +115,16 @@
   text-decoration: underline;
   text-decoration-color: #ccc;
   cursor: pointer;
+}
+
+a.Post-title {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+a.Post-title:visited {
+  color: #000;
+  text-decoration: none;
 }
 
 .Post-summary p:first-child {
